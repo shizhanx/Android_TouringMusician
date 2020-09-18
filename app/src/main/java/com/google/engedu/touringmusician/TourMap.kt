@@ -28,41 +28,24 @@ class TourMap(context: Context?) : View(context) {
     private val list = CircularLinkedList()
     private var insertMode = "Add"
     private val pointPaint = Paint()
-    private val path = Path()
-    private val pathPaint = Paint()
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.drawBitmap(mapImage, 0f, 0f, null)
         pointPaint.color = Color.RED
         var last: Point? = null
-//        for (p in list) {
-//            if (p != null) {
-//                canvas.drawCircle(p.x.toFloat(), p.y.toFloat(), 10f, pointPaint)
-//                if (last != null) {
-//                    canvas.drawLine(p.x.toFloat(), p.y.toFloat(), last!!.x.toFloat(), last!!.y.toFloat(), pointPaint)
-//                }
-//                last = p
-//            }
-//        }
-//        val head = list.head?.point
-//        if (head != null) {
-//            canvas.drawLine(head.x.toFloat(), head.y.toFloat(), last!!.x.toFloat(), last!!.y.toFloat(), pointPaint)
-        pathPaint.style=Paint.Style.STROKE
-        pathPaint.color = Color.BLACK
-        pathPaint.strokeWidth = 3f
         for (p in list) {
             if (p != null) {
                 canvas.drawCircle(p.x.toFloat(), p.y.toFloat(), 10f, pointPaint)
                 if (last != null) {
-                    path.lineTo(p.x.toFloat(), p.y.toFloat())
-                }else{
-                    path.moveTo(p.x.toFloat(), p.y.toFloat())
+                    canvas.drawLine(p.x.toFloat(), p.y.toFloat(), last!!.x.toFloat(), last!!.y.toFloat(), pointPaint)
                 }
                 last = p
             }
         }
-        path.close()
-        canvas.drawPath(path, pathPaint)
+        val head = list.head?.point
+        if (head != null) {
+            canvas.drawLine(head.x.toFloat(), head.y.toFloat(), last!!.x.toFloat(), last!!.y.toFloat(), pointPaint)
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

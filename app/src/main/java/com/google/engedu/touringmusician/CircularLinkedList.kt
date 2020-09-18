@@ -44,12 +44,16 @@ class CircularLinkedList : Iterable<Point?> {
     }
 
     fun totalDistance(): Float {
-        /**
-         *
-         * YOUR CODE GOES HERE
-         *
-         */
-        return 0f
+        var ans = 0f
+        if (head == null || head!!.next == head) return ans
+        if (head!!.next?.next == head) return distanceBetween(head!!.point, head!!.next!!.point)
+        var current = head
+        while(current!!.next != head){
+            ans += distanceBetween(current.point, current.next!!.point)
+            current = current.next
+        }
+        ans += distanceBetween(current.point, head!!.point)
+        return ans
     }
 
     fun insertNearest(p: Point?) {
