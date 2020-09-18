@@ -33,9 +33,7 @@ class CircularLinkedList : Iterable<Point?> {
             head!!.prev = node
             head = node
         } else {
-            head = Node(p, null, null)
-            head!!.prev = head
-            head!!.next = head
+            insertEmpty(p)
         }
     }
 
@@ -56,7 +54,26 @@ class CircularLinkedList : Iterable<Point?> {
         return ans
     }
 
-    fun insertNearest(p: Point?) {
+    fun insertNearest(p: Point) {
+        if(head == null) insertEmpty(p)
+        else {
+            var minDist = distanceBetween(p, head!!.point)
+            var nearest = head
+            var current = head
+            while(current!!.next != head){
+                current = current!!.next
+                if(minDist > distanceBetween(current!!.point, p)) {
+                    minDist = distanceBetween(current!!.point, p)
+                    nearest = current
+                }
+            }
+            val node = Node(p, nearest, nearest!!.next)
+            nearest!!.next!!.prev = node
+            nearest!!.next = node
+        }
+    }
+
+    fun insertSmallest(p: Point) {
         /**
          *
          * YOUR CODE GOES HERE
@@ -64,12 +81,10 @@ class CircularLinkedList : Iterable<Point?> {
          */
     }
 
-    fun insertSmallest(p: Point?) {
-        /**
-         *
-         * YOUR CODE GOES HERE
-         *
-         */
+    private fun insertEmpty(p: Point) {
+        head = Node(p, null, null)
+        head!!.prev = head
+        head!!.next = head
     }
 
     fun reset() {
