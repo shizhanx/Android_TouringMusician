@@ -22,49 +22,66 @@ import android.view.View
 import android.widget.TextView
 
 class TourMap(context: Context?) : View(context) {
-    private val mapImage: Bitmap
+    private val mapImage: Bitmap = BitmapFactory.decodeResource(
+            resources,
+            R.drawable.map)
     private val list = CircularLinkedList()
     private var insertMode = "Add"
+    private val pointPaint = Paint()
+    private val path = Path()
+    private val pathPaint = Paint()
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.drawBitmap(mapImage, 0f, 0f, null)
-        val pointPaint = Paint()
         pointPaint.color = Color.RED
-        /**
-         *
-         * YOUR CODE GOES HERE
-         *
-         */
+        var last: Point? = null
+//        for (p in list) {
+//            if (p != null) {
+//                canvas.drawCircle(p.x.toFloat(), p.y.toFloat(), 10f, pointPaint)
+//                if (last != null) {
+//                    canvas.drawLine(p.x.toFloat(), p.y.toFloat(), last!!.x.toFloat(), last!!.y.toFloat(), pointPaint)
+//                }
+//                last = p
+//            }
+//        }
+//        val head = list.head?.point
+//        if (head != null) {
+//            canvas.drawLine(head.x.toFloat(), head.y.toFloat(), last!!.x.toFloat(), last!!.y.toFloat(), pointPaint)
+        pathPaint.style=Paint.Style.STROKE
+        pathPaint.color = Color.BLACK
+        pathPaint.strokeWidth = 3f
         for (p in list) {
-            /**
-             *
-             * YOUR CODE GOES HERE
-             *
-             */
-            canvas.drawCircle(p.x.toFloat(), p.y.toFloat(), 20f, pointPaint)
+            if (p != null) {
+                canvas.drawCircle(p.x.toFloat(), p.y.toFloat(), 10f, pointPaint)
+                if (last != null) {
+                    path.lineTo(p.x.toFloat(), p.y.toFloat())
+                }else{
+                    path.moveTo(p.x.toFloat(), p.y.toFloat())
+                }
+                last = p
+            }
         }
-        /**
-         *
-         * YOUR CODE GOES HERE
-         *
-         */
+        path.close()
+        canvas.drawPath(path, pathPaint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 val p = Point(event.x.toInt(), event.y.toInt())
-                if (insertMode == "Closest") {
-                    list.insertNearest(p)
-                } else if (insertMode == "Smallest") {
-                    list.insertSmallest(p)
-                } else {
-                    list.insertBeginning(p)
+                when (insertMode) {
+                    "Closest" -> {
+                        list.insertNearest(p)
+                    }
+                    "Smallest" -> {
+                        list.insertSmallest(p)
+                    }
+                    else -> {
+                        list.insertBeginning(p)
+                    }
                 }
                 val message = (context as Activity).findViewById<View>(R.id.game_status) as TextView
-                if (message != null) {
-                    message.text = String.format("Tour length is now %.2f", list.totalDistance())
-                }
+                message.text = String.format("Tour length is now %.2f", list.totalDistance())
                 invalidate()
                 return true
             }
@@ -81,9 +98,4 @@ class TourMap(context: Context?) : View(context) {
         insertMode = mode
     }
 
-    init {
-        mapImage = BitmapFactory.decodeResource(
-                resources,
-                R.drawable.map)
-    }
 }

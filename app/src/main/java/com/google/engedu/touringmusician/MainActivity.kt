@@ -50,8 +50,6 @@ class MainActivity : AppCompatActivity() {
     fun onReset(v: View?) {
         map!!.reset()
         val message = findViewById<View>(R.id.game_status) as TextView
-        if (message != null) {
-            message.text = "Tap map to add new tour stops."
-        }
+        message.text = "Tap map to add new tour stops."
     }
 }

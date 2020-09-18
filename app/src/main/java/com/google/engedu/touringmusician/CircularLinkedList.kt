@@ -15,30 +15,32 @@
 package com.google.engedu.touringmusician
 
 import android.graphics.Point
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class CircularLinkedList : Iterable<Point?> {
-    inner class Node {
-        var point: Point? = null
-        var prev: Node? = null
-        var next: Node? = null
-        /**
-         *
-         * YOUR CODE GOES HERE
-         *
-         */
+    inner class Node(p: Point, pre: Node?, n: Node?) {
+        var point: Point = p
+        var prev: Node? = pre
+        var next: Node? = n
     }
 
     var head: Node? = null
-    fun insertBeginning(p: Point?) {
-        /**
-         *
-         * YOUR CODE GOES HERE
-         *
-         */
+    fun insertBeginning(p: Point) {
+        if (head != null) {
+            val node = Node(p, head!!.prev, head)
+            head!!.prev?.next = node
+            head!!.prev = node
+            head = node
+        } else {
+            head = Node(p, null, null)
+            head!!.prev = head
+            head!!.next = head
+        }
     }
 
     private fun distanceBetween(from: Point, to: Point): Float {
-        return Math.sqrt(Math.pow(from.y - to.y.toDouble(), 2.0) + Math.pow(from.x - to.x.toDouble(), 2.0)).toFloat()
+        return sqrt((from.y - to.y.toDouble()).pow(2.0) + (from.x - to.x.toDouble()).pow(2.0)).toFloat()
     }
 
     fun totalDistance(): Float {
@@ -94,7 +96,7 @@ class CircularLinkedList : Iterable<Point?> {
         }
     }
 
-    override fun iterator(): MutableIterator<Point> {
+    override fun iterator(): MutableIterator<Point?> {
         return CircularLinkedListIterator()
     }
 }
