@@ -46,7 +46,7 @@ class CircularLinkedList : Iterable<Point?> {
         if (head == null || head!!.next == head) return ans
         if (head!!.next?.next == head) return distanceBetween(head!!.point, head!!.next!!.point)
         var current = head
-        while(current!!.next != head){
+        while (current!!.next != head) {
             ans += distanceBetween(current.point, current.next!!.point)
             current = current.next
         }
@@ -55,30 +55,42 @@ class CircularLinkedList : Iterable<Point?> {
     }
 
     fun insertNearest(p: Point) {
-        if(head == null) insertEmpty(p)
+        if (head == null) insertEmpty(p)
         else {
             var minDist = distanceBetween(p, head!!.point)
             var nearest = head
             var current = head
-            while(current!!.next != head){
-                current = current!!.next
-                if(minDist > distanceBetween(current!!.point, p)) {
-                    minDist = distanceBetween(current!!.point, p)
+            while (current!!.next != head) {
+                current = current.next
+                if (minDist > distanceBetween(current!!.point, p)) {
+                    minDist = distanceBetween(current.point, p)
                     nearest = current
                 }
             }
             val node = Node(p, nearest, nearest!!.next)
-            nearest!!.next!!.prev = node
-            nearest!!.next = node
+            nearest.next!!.prev = node
+            nearest.next = node
         }
     }
 
     fun insertSmallest(p: Point) {
-        /**
-         *
-         * YOUR CODE GOES HERE
-         *
-         */
+        if (head == null || head!!.next == head) insertBeginning(p)
+        else {
+            var minDist = distanceBetween(p, head!!.point) + distanceBetween(p, head!!.next!!.point) - distanceBetween(head!!.point, head!!.next!!.point)
+            var nearest = head
+            var current = head
+            while (current!!.next != head) {
+                current = current.next
+                val dist = distanceBetween(p, current!!.point) + distanceBetween(p, current.next!!.point) - distanceBetween(current.point, current.next!!.point)
+                if (minDist > dist) {
+                    minDist = dist
+                    nearest = current
+                }
+            }
+            val node = Node(p, nearest, nearest!!.next)
+            nearest.next!!.prev = node
+            nearest.next = node
+        }
     }
 
     private fun insertEmpty(p: Point) {
